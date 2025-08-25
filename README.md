@@ -1,77 +1,59 @@
-Escuela Colombiana de Ingeniería
+### Escuela Colombiana de Ingeniería
 
-Arquitecturas de Software – ARSW
+### Arquitecturas de Software – ARSW
 
-####Taller – programación concurrente, condiciones de carrera y sincronización de hilos. EJERCICIO INDIVIDUAL O EN PAREJAS.
+#### Taller – programación concurrente, condiciones de carrera y sincronización de hilos.
 
-#####Parte I – Antes de terminar la clase.
+## 📌 Parte 1: Antes de terminar la clase 
 
-Creación, puesta en marcha y coordinación de hilos.
+⚙️ Creación, puesta en marcha y coordinación de hilos 
 
-1. Revise el programa “primos concurrentes” (en la carpeta parte1), dispuesto en el paquete edu.eci.arsw.primefinder. Este es un programa que calcula los números primos entre dos intervalos, distribuyendo la búsqueda de los mismos entre hilos independientes. Por ahora, tiene un único hilo de ejecución que busca los primos entre 0 y 30.000.000. Ejecútelo, abra el administrador de procesos del sistema operativo, y verifique cuantos núcleos son usados por el mismo.
+1. Lo primero que se hizo fue cambiar el intervalo, se dejo en 100 millones debido a la capacidad (recomendación del profesor), quedo de la siguiente manera:
 
-2. Modifique el programa para que, en lugar de resolver el problema con un solo hilo, lo haga con tres, donde cada uno de éstos hará la tarcera parte del problema original. Verifique nuevamente el funcionamiento, y nuevamente revise el uso de los núcleos del equipo.
+<p align="center">
+<img width="617" height="290" alt="image" src="https://github.com/user-attachments/assets/6dc05250-ab8b-4acc-9e0b-723156761d12" />
+</p>
 
-3. Lo que se le ha pedido es: debe modificar la aplicación de manera que cuando hayan transcurrido 5 segundos desde que se inició la ejecución, se detengan todos los hilos y se muestre el número de primos encontrados hasta el momento. Luego, se debe esperar a que el usuario presione ENTER para reanudar la ejecución de los mismo.
+- Vemos como en la CPU se están usando todos los núcleos debido a la capacidad del computador, lo tiene al 100%: 
 
+<p align="center">
+<img width="1183" height="605" alt="image" src="https://github.com/user-attachments/assets/75f47452-55bb-42e5-a9f0-41b54aad5920" />
+</p>
 
+2. Para este punto en vez de devolver el programa con un solo hilo teníamos que hacerlo ahora con 3 donde cada uno hará la tercera parte del problema original, entonces creamos los 3 hilos e iniciamos las ejecuciones con Start(), quedo de la siguiente manera:
 
-#####Parte II 
+<p align="center">
+<img width="612" height="415" alt="image" src="https://github.com/user-attachments/assets/7e23c7f4-d546-470b-b6d5-120fbe6d8f5d" />
+</p>
 
+- Ahora vamos a mirar como termina siendo el uso de los núcleos del equipo, en teoría tendria que ser más rapido, pero como el computador tiene pocos núcleos no se puede evidenciar la diferencia con respecto al uso de los núcleos:
 
-Para este ejercicio se va a trabajar con un simulador de carreras de galgos (carpeta parte2), cuya representación gráfica corresponde a la siguiente figura:
+<p align="center">
+<img width="1148" height="601" alt="image" src="https://github.com/user-attachments/assets/cd6840af-32fb-4446-bdf5-19d3d642a5a6" />
+</p>
 
-![](./img/media/image1.png)
+3.  Para este punto vamos a crear una clase la cual se llamo **PauseController.java**, esta es responsable de gestionar el estado de pausa y reanudación mediante diferentes metodos, luego  la clase **PrimeFinderThread.java** se modificó para recibir una instancia de **PauseController** y consultar **awaitIfPaused()** en cada iteración, de modo que todos los hilos se detienen de forma segura cuando se activa la pausa y ya en el **Main**  tras iniciar los tres hilos se espera 5 segundos, se llama a **pause()**, se muestra en consola el número de primos encontrados hasta ese momento, y luego se espera a que el usuario presione ENTER para invocar **resumeAll()**. Finalmente, se hace **join()** a los hilos y se imprime el total
 
-En la simulación, todos los galgos tienen la misma velocidad (a nivel de programación), por lo que el galgo ganador será aquel que (por cuestiones del azar) haya sido más beneficiado por el *scheduling* del
-procesador (es decir, al que más ciclos de CPU se le haya otorgado durante la carrera). El modelo de la aplicación es el siguiente:
+- **PauseController.java**:
 
-![](./img/media/image2.png)
+<p align="center">
+<img width="421" height="528" alt="image" src="https://github.com/user-attachments/assets/e4f26246-6137-41fd-ba1f-7638744f042c" />
+</p>
 
-Como se observa, los galgos son objetos ‘hilo’ (Thread), y el avance de los mismos es visualizado en la clase Canodromo, que es básicamente un formulario Swing. Todos los galgos (por defecto son 17 galgos corriendo en una pista de 100 metros) comparten el acceso a un objeto de tipo
-RegistroLLegada. Cuando un galgo llega a la meta, accede al contador ubicado en dicho objeto (cuyo valor inicial es 1), y toma dicho valor como su posición de llegada, y luego lo incrementa en 1. El galgo que
-logre tomar el ‘1’ será el ganador.
+- **PrimeFinderThread.java**:
 
-Al iniciar la aplicación, hay un primer error evidente: los resultados (total recorrido y número del galgo ganador) son mostrados antes de que finalice la carrera como tal. Sin embargo, es posible que una vez corregido esto, haya más inconsistencias causadas por la presencia de condiciones de carrera.
+<p align="center">
+<img width="626" height="312" alt="image" src="https://github.com/user-attachments/assets/7ba286a7-018e-43c6-9954-235e36e87622" />
+</p>
 
-Taller.
+- **Main.java**:
 
-1.  Corrija la aplicación para que el aviso de resultados se muestre
-    sólo cuando la ejecución de todos los hilos ‘galgo’ haya finalizado.
-    Para esto tenga en cuenta:
+<p align="center">
+<img width="598" height="333" alt="image" src="https://github.com/user-attachments/assets/b507ff46-8009-4664-883e-8553b80b5680" />
+</p>
 
-    a.  La acción de iniciar la carrera y mostrar los resultados se realiza a partir de la línea 38 de MainCanodromo.
+De esta manera corremos el programa y vemos como a los 5 segundos se detiene y nos muestra la cantidad de primos hasta el momento: 
 
-    b.  Puede utilizarse el método join() de la clase Thread para sincronizar el hilo que inicia la carrera, con la finalización de los hilos de los galgos.
-
-2.  Una vez corregido el problema inicial, corra la aplicación varias
-    veces, e identifique las inconsistencias en los resultados de las
-    mismas viendo el ‘ranking’ mostrado en consola (algunas veces
-    podrían salir resultados válidos, pero en otros se pueden presentar
-    dichas inconsistencias). A partir de esto, identifique las regiones
-    críticas () del programa.
-
-3.  Utilice un mecanismo de sincronización para garantizar que a dichas
-    regiones críticas sólo acceda un hilo a la vez. Verifique los
-    resultados.
-
-4.  Implemente las funcionalidades de pausa y continuar. Con estas,
-    cuando se haga clic en ‘Stop’, todos los hilos de los galgos
-    deberían dormirse, y cuando se haga clic en ‘Continue’ los mismos
-    deberían despertarse y continuar con la carrera. Diseñe una solución que permita hacer esto utilizando los mecanismos de sincronización con las primitivas de los Locks provistos por el lenguaje (wait y notifyAll).
-
-
-## Criterios de evaluación
-
-1. Funcionalidad.
-
-    1.1. La ejecución de los galgos puede ser detenida y resumida consistentemente.
-    
-    1.2. No hay inconsistencias en el orden de llegada registrado.
-    
-2. Diseño.   
-
-    2.1. Se hace una sincronización de sólo la región crítica (sincronizar, por ejemplo, todo un método, bloquearía más de lo necesario).
-    
-    2.2. Los galgos, cuando están suspendidos, son reactivados son sólo un llamado (usando un monitor común).
-
+<p align="center">
+<img width="518" height="316" alt="image" src="https://github.com/user-attachments/assets/28a894ec-1a36-4505-835d-cc356131e654" />
+</p>
