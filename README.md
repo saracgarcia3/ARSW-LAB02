@@ -83,6 +83,8 @@ for (int i = 0; i < can.getNumCarriles(); i++) {
     galgos[i].join();
 }
 
+```
+
 // Mostrar resultados
 can.winnerDialog(reg.getGanador(), reg.getUltimaPosicionAlcanzada() - 1);
 
