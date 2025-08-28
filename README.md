@@ -2,6 +2,19 @@
 
 ### Arquitecturas de Software – ARSW
 
+---
+
+## 👥 Authors
+
+- *Sara Katherin Castillo Garcia*  
+  GitHub: [saracgarcia3](https://github.com/saracgarcia3)
+
+- *David Santiago Espinosa Rojas*  
+  GitHub: [daviespr1406](https://github.com/daviespr1406)
+
+
+---
+
 #### Taller – programación concurrente, condiciones de carrera y sincronización de hilos.
 
 ## 📌 Parte 1: Antes de terminar la clase 
