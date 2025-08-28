@@ -57,3 +57,54 @@ De esta manera corremos el programa y vemos como a los 5 segundos se detiene y n
 <p align="center">
 <img width="518" height="316" alt="image" src="https://github.com/user-attachments/assets/28a894ec-1a36-4505-835d-cc356131e654" />
 </p>
+
+
+## ⚡ Problemas Iniciales
+
+1. Al iniciar la carrera, los resultados se muestran **antes de que los galgos terminen**.  
+2. Se presentan **condiciones de carrera** en el objeto `RegistroLlegada`, generando posiciones repetidas.  
+3. No existe una forma de **pausar y reanudar** la carrera.
+
+---
+
+## ✅ Soluciones Implementadas
+
+### 1. Esperar finalización con `join()`
+
+En la clase `MainCanodromo`, luego de iniciar todos los hilos de galgos, se utiliza `join()` para esperar que todos finalicen antes de mostrar los resultados.
+
+```java
+for (int i = 0; i < can.getNumCarriles(); i++) {
+    galgos[i].start();
+}
+
+// Esperar que terminen
+for (int i = 0; i < can.getNumCarriles(); i++) {
+    galgos[i].join();
+}
+
+// Mostrar resultados
+can.winnerDialog(reg.getGanador(), reg.getUltimaPosicionAlcanzada() - 1);
+
+2. Sincronización de la llegada (RegistroLlegada)
+
+La clase RegistroLlegada fue modificada para evitar que dos hilos obtengan la misma posición de llegada.
+Se implementó un método atómico getAndIncrementarPosicion() con synchronized.
+
+3. Funcionalidades de Pausa y Reanudar
+
+Se añadió un monitor de pausa (pauseLock) compartido entre todos los galgos.
+
+Cuando se presiona Stop, los galgos entran en wait().
+
+Cuando se presiona Continue, se ejecuta notifyAll() para despertarlos.
+
+🎯 Conclusiones
+
+- join() asegura que los resultados se muestren al final de la carrera.
+
+- synchronized en RegistroLlegada evita condiciones de carrera en las posiciones.
+
+- wait() y notifyAll() permiten implementar pausa y reanudación de la simulación.
+
+Con estos cambios, el simulador funciona de manera segura, sincronizada y controlable.
